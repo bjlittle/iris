@@ -20,10 +20,11 @@
 import iris.tests as tests
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 import iris
 import iris.plot as iplt
-import numpy as np
+
 
 @iris.tests.skip_data
 class TestGribLoad(tests.GraphicsTest):
@@ -33,14 +34,13 @@ class TestGribLoad(tests.GraphicsTest):
                         '201007020900_u1096_ng_ey00_visibility0180_screen_2km')))[0]
         self.assertCML(cube, ("nimrod", "load.cml"))
         
-        plt.contourf(cube.data, levels=np.linspace(np.min(cube.data), np.max(cube.data), 50))
+        c = plt.contourf(cube.data, levels=np.linspace(0, 70000, 8))
         self.check_graphic()
         
         # TODO: #84
 #        iplt.contourf(cube)
 #        iplt.gcm(cube).drawcoastlines()
 #        self.check_graphic()
-        
  
 
 if __name__ == "__main__":
