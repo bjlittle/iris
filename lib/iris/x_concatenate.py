@@ -242,7 +242,7 @@ def concatenate(cubes):
 
         # Create a new proto-cube for an unregistered cube.
         if not registered:
-            proto_cubes.append(ProtoCube(cube, axis))
+            proto_cubes.append(ProtoCube(cube))
 
     # Construct a concatenated cube from each of the proto-cubes.
     concatenated_cubes = iris.cube.CubeList()
@@ -471,7 +471,7 @@ class ProtoCube(object):
     common dimension.
 
     """
-    def __init__(self, cube, axis=None):
+    def __init__(self, cube):
         """
         Create a new ProtoCube from the given cube and record the cube
         as a source-cube.
@@ -480,12 +480,6 @@ class ProtoCube(object):
 
         * cube:
             Source :class:`iris.cube.Cube` of the :class:`ProtoCube`.
-
-        Kwargs:
-
-        * axis:
-            Seed the dimension of concatenation for the :class:`ProtoCube`
-            rather than rely on negotiation with source-cubes.
 
         """
         # Cache the source-cube of this proto-cube.
@@ -504,7 +498,7 @@ class ProtoCube(object):
         self._add_skeleton(self._coord_signature, cube.data)
 
         # The nominated axis of concatenation.
-        self._axis = axis
+        self._axis = None
 
     @property
     def axis(self):
@@ -576,14 +570,10 @@ class ProtoCube(object):
 
         """
         # Verify and assert the nominated axis.
-        if axis is not None:
-            if self._axis is None:
-                # Seed the proto-cube nominated axis.
-                self._axis = axis
-            elif self._axis != axis:
-                msg = 'Nominated axis [{}] is not equal ' \
-                    'to negotiated axis [{}]'.format(axis, self._axis)
-                raise ValueError(msg)
+        if axis is not None and self.axis is not None and self.axis != axis:
+            msg = 'Nominated axis [{}] is not equal ' \
+                'to negotiated axis [{}]'.format(axis, self.axis)
+            raise ValueError(msg)
 
         # Check for compatible cube signatures.
         cube_signature = CubeSignature(cube)
@@ -592,19 +582,21 @@ class ProtoCube(object):
         # Check for compatible coordinate signatures.
         if match:
             coord_signature = CoordSignature(cube_signature)
-            axis = self._coord_signature.candidate_axis(coord_signature)
-            match = (self._axis == axis or self._axis is None) and \
-                axis is not None
+            candidate_axis = self._coord_signature.candidate_axis(
+                coord_signature)
+            match = candidate_axis is not None and (candidate_axis == axis or
+                                                    axis is None)
 
         # Check for compatible coordinate extents.
         if match:
-            match = self._sequence(coord_signature.dim_extents[axis], axis)
+            match = self._sequence(coord_signature.dim_extents[candidate_axis],
+                                   candidate_axis)
 
         if match:
             # Register the cube as a source-cube for this proto-cube.
             self._add_skeleton(coord_signature, cube.data)
             # Declare the nominated axis of concatenation.
-            self._axis = axis
+            self._axis = candidate_axis
 
         return match
 
