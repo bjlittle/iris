@@ -23,6 +23,11 @@ Test the experimental ocean micro-sprint.
 # before importing anything else.
 import iris.tests as tests
 
+
+### TODO: Move some of these tests into a top-edge testing module,
+### and some into the new stream_transport testing module.
+
+
 import glob
 from itertools import izip
 import os
@@ -328,7 +333,21 @@ class TestPathData(tests.IrisTest):
 
         path = [[(self.dx.shape[1], 0)]]
         path_data = self.transport.path_data(path)
-        empty = np.array([], ndmin=2, dtype=np.float64).reshape(2, 0)
+        empty = np.array([], ndmin=2, dtype=np.float64).reshape(2, 0)    def test_top_edge(self):
+        input_lat = 80
+        path = top_edge.find_path(self.input_cubes["t"], line=input_line)
+
+        sf = stream_transport.stream_function(self.input_cubes, path)
+        nt = stream_transport.net_transport(self.input_cubes, path)
+        
+        self.assertArrayAlmostEqual(
+            sf, [[6333624.90755, 12667249.8704, 19000874.9167,
+                  25334500.0849, 31668125.408]], decimal=2)
+        
+        self.assertArrayAlmostEqual(nt, [31668125.408], decimal=2)
+
+
+
         target = ocean.PathData(empty, np.array([], dtype=np.float64), empty)
         for actual, expected in zip(path_data, target):
             np.testing.assert_array_equal(actual, expected)
