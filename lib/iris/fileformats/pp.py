@@ -803,7 +803,7 @@ def _data_bytes_to_shaped_array(data_bytes, lbpack, data_shape, data_type, mdi,
 
 # The special headers of the PPField classes which get some improved functionality
 _SPECIAL_HEADERS = ('lbtim', 'lbcode', 'lbpack', 'lbproc', 'data', 'stash',
-                    't1', 't2', 'header_longs', 'header_floats')
+                    't1', 't2', 'header')
 
 
 def _header_defn(release_number):
@@ -853,14 +853,10 @@ class PPField(object):
 
     __slots__ = ()
 
-    def __init__(self):
-        """
-        PPField instances are always created empty, and attributes are added subsequently.
-
-        .. seealso::
-            For PP field loading see :func:`load`.
-
-        """
+    def __init__(self, header_longs=None, header_floats=None):
+        if header_longs is not None:
+            self._header = tuple(header_longs) + tuple(header_floats)
+            self.raw_lbpack = self._header[self.HEADER_DICT['lbpack'][0]]
 
     def __getattr__(self, key):
         try:
@@ -873,20 +869,20 @@ class PPField(object):
                 cls = self.__class__.__name__
                 msg = '{!r} object has no attribute {!r}'.format(cls, key)
                 raise AttributeError(msg)
-            
-        if loc[0] <= (NUM_LONG_HEADERS - UM_TO_PP_HEADER_OFFSET):
-            header = self._header_longs
-            offset = 0
-        else:
-            header = self._header_floats
-            offset = NUM_LONG_HEADERS - UM_TO_PP_HEADER_OFFSET + 1
+
+#        if loc[0] <= (NUM_LONG_HEADERS - UM_TO_PP_HEADER_OFFSET):
+#            header = self._header_longs
+#            offset = 0
+#        else:
+#            header = self._header_floats
+#            offset = NUM_LONG_HEADERS - UM_TO_PP_HEADER_OFFSET + 1
 
         if len(loc) == 1:
-            value = header[loc[0] - offset]
+            value = self._header[loc[0]]
         else:
-            start = loc[0] - offset
-            stop = loc[-1] + 1 - offset
-            value = tuple(header[start:stop])
+            start = loc[0]
+            stop = loc[-1] + 1
+            value = tuple(self._header[start:stop])
 
         if key.startswith('_'):
             # First we need to assign to the attribute so that the
@@ -1368,13 +1364,6 @@ class PPField2(PPField):
 
     __slots__ = _pp_attribute_names(HEADER_DEFN)
 
-    def __init__(self, header_longs=None, header_floats=None):
-        self._header_longs = header_longs
-        self._header_floats = header_floats
-        self.raw_lbpack = None
-        if header_longs is not None:
-            self.raw_lbpack = self._header_longs[self.HEADER_DICT['lbpack']]
-
     def _get_t1(self):
         if not hasattr(self, '_t1'):
             self._t1 = netcdftime.datetime(self.lbyr, self.lbmon, self.lbdat, self.lbhr, self.lbmin)
@@ -1421,13 +1410,6 @@ class PPField3(PPField):
     HEADER_DICT = dict(_header_defn(3))
 
     __slots__ = _pp_attribute_names(HEADER_DEFN)
-
-    def __init__(self, header_longs=None, header_floats=None):
-        self._header_longs = header_longs
-        self._header_floats = header_floats
-        self.raw_lbpack = None
-        if header_longs is not None:
-            self.raw_lbpack = self._header_longs[self.HEADER_DICT['lbpack']]
 
     def _get_t1(self):
         if not hasattr(self, '_t1'):
@@ -1599,17 +1581,23 @@ def _field_gen(filename, read_data_bytes):
     pp_file_seek = pp_file.seek
     pp_file_read = pp_file.read
 
+    header_longs_format = '>{:d}i'.format(NUM_LONG_HEADERS)
+    header_floats_format = '>{:d}f'.format(NUM_FLOAT_HEADERS)
     # Keep reading until we reach the end of file
     while True:
         # Move past the leading header length word
         pp_file_seek(PP_WORD_DEPTH, os.SEEK_CUR)
         # Get the LONG header entries
-        header_longs = np.fromfile(pp_file, dtype='>i%d' % PP_WORD_DEPTH, count=NUM_LONG_HEADERS)
+        data_longs = pp_file_read(PP_WORD_DEPTH * NUM_LONG_HEADERS)
         # Nothing returned => EOF
-        if len(header_longs) == 0:
+        if len(data_longs) == 0:
             break
+        header_longs = struct.unpack_from(header_longs_format, data_longs)
         # Get the FLOAT header entries
-        header_floats = np.fromfile(pp_file, dtype='>f%d' % PP_WORD_DEPTH, count=NUM_FLOAT_HEADERS)
+        data_floats = pp_file_read(PP_WORD_DEPTH * NUM_FLOAT_HEADERS)
+        if len(data_floats) == 0:
+            break
+        header_floats = struct.unpack_from(header_floats_format, data_floats)
 
         # Make a PPField of the appropriate sub-class (depends on header release number)
         pp_field = make_pp_field(header_longs, header_floats)
