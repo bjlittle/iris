@@ -1581,23 +1581,23 @@ def _field_gen(filename, read_data_bytes):
     pp_file_seek = pp_file.seek
     pp_file_read = pp_file.read
 
+    header_longs_format = '>{:d}i'.format(NUM_LONG_HEADERS)
+    header_floats_format = '>{:d}f'.format(NUM_FLOAT_HEADERS)
     # Keep reading until we reach the end of file
     while True:
         # Move past the leading header length word
         pp_file_seek(PP_WORD_DEPTH, os.SEEK_CUR)
         # Get the LONG header entries
-#        header_longs = np.fromfile(pp_file, dtype='>i%d' % PP_WORD_DEPTH, count=NUM_LONG_HEADERS)
         data_longs = pp_file_read(PP_WORD_DEPTH * NUM_LONG_HEADERS)
         # Nothing returned => EOF
         if len(data_longs) == 0:
             break
-        header_longs = struct.unpack_from('>' + 'i' * NUM_LONG_HEADERS, data_longs)
+        header_longs = struct.unpack_from(header_longs_format, data_longs)
         # Get the FLOAT header entries
-#        header_floats = np.fromfile(pp_file, dtype='>f%d' % PP_WORD_DEPTH, count=NUM_FLOAT_HEADERS)
         data_floats = pp_file_read(PP_WORD_DEPTH * NUM_FLOAT_HEADERS)
         if len(data_floats) == 0:
             break
-        header_floats = struct.unpack_from('>' + 'f' * NUM_FLOAT_HEADERS, data_floats)
+        header_floats = struct.unpack_from(header_floats_format, data_floats)
 
         # Make a PPField of the appropriate sub-class (depends on header release number)
         pp_field = make_pp_field(header_longs, header_floats)
