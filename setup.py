@@ -1,10 +1,11 @@
 from __future__ import print_function
 
 import contextlib
-from distutils.command import build_ext, build_py
+from distutils.command import build_py
 from distutils.core import setup, Command
 from distutils.sysconfig import get_config_var
 from distutils.util import convert_path
+from setuptools import Extension
 import fnmatch
 import multiprocessing
 import os
@@ -12,6 +13,11 @@ import sys
 
 import numpy as np
 import setuptools
+
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    raise ImportError('Cython 0.15.1+ is required to install cartopy.')
 
 # Add full path so Python doesn't load any __init__.py in the intervening
 # directories, thereby saving setup.py from additional dependencies.
@@ -224,7 +230,21 @@ setup(
             ]
         )
     },
+    ext_modules=[
+        Extension(
+            'iris.experimental._agg',
+            [
+                'lib/iris/experimental/_agg.pyx',
+                'lib/iris/experimental/_agg_raster.cpp',
+            ],
+            include_dirs=['./lib/iris/experimental',
+                '/data/local/itwl/third_party_builds/matplotlib-1.3.1/agg24/include',
+                np.get_include()
+                ],
+            language='c++',
+        ),
+    ],
     cmdclass={'test': SetupTestRunner, 'build_py': BuildPyWithExtras,
               'std_names': MakeStdNames, 'pyke_rules': MakePykeRules,
-              'clean_source': CleanSource},
+              'clean_source': CleanSource, 'build_ext': build_ext},
 )

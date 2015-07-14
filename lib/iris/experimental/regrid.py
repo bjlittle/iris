@@ -24,6 +24,8 @@ from six.moves import (filter, input, map, range, zip)  # noqa
 
 from collections import namedtuple
 import copy
+import math
+import operator
 import warnings
 
 import numpy as np
@@ -33,6 +35,7 @@ from scipy.sparse import csc_matrix
 import iris.analysis.cartography
 from iris.analysis._interpolation import get_xy_dim_coords, snapshot_grid
 from iris.analysis._regrid import RectilinearRegridder
+from iris.experimental._agg import _raster_weights as agg_raster_weights
 import iris.coord_systems
 import iris.cube
 import iris.unit
@@ -1159,3 +1162,154 @@ class PointInCell(object):
 
         """
         return CurvilinearRegridder(src_grid, target_grid, self.weights)
+
+
+def regrid_agg(src_cube, grid_cube):
+    """
+    blah ...
+
+    """
+    # Get the source cube x and y coordinates.
+    sx, sy = get_xy_dim_coords(src_cube)
+
+    # Sanity check the source cube coordinates ...
+    if sx.coord_system is None:
+        msg = 'The source cube requires a native coordinate system.'
+        raise ValueError(msg)
+
+    # Get the grid cube x and y coordinates.
+    gx, gy = get_xy_dim_coords(grid_cube)
+
+    # Sanity check the grid cube coordinates ...
+    if gx.coord_system is None:
+        msg = 'The grid cube requires a native coordinate system.'
+        raise ValueError(msg)
+
+    # Get the contiguous bounds of the grid ...
+    gx_bounds = gx.contiguous_bounds()
+    gy_bounds = gy.contiguous_bounds()
+
+    # Convert the grid to the source crs ...
+    xx, yy = np.meshgrid(gx_bounds, gy_bounds)
+
+    if sx.coord_system == gx.coord_system:
+        x, y = xx, yy
+    else:
+        from_crs = gx.coord_system.as_cartopy_crs()
+        to_crs = sx.coord_system.as_cartopy_crs()
+        xyz = to_crs.transform_points(from_crs, xx, yy)
+        x, y = xyz[..., 0], xyz[..., 1]
+
+    def start_and_delta(coord):
+        points = coord.points
+        delta = points[1] - points[0]
+        # Constrain to regular coordinate points.
+        np.testing.assert_approx_equal(np.diff(points).sum(),
+                                       delta * (points.shape[0] - 1))
+        bounds = coord.contiguous_bounds()
+        return bounds.min(), points[1] - points[0]
+
+    sx0, sdx = start_and_delta(sx)
+    sy0, sdy = start_and_delta(sy)
+
+    #
+    # XXX: deal with generic source cube shape ...
+    #
+    data = src_cube.data
+
+    sx_dim, sy_dim = src_cube.coord_dims(sx)[0], src_cube.coord_dims(sy)[0]
+    snx, sny = sx.points.size, sy.points.size
+    dims = list(range(src_cube.ndim))
+    dr = [sy_dim, sx_dim]
+    do = src_cube.ndim - len(dr)
+    ds = sorted(dims, key=lambda d: d in dr)
+    dmap = {d: dr.index(d) + do if d in dr else ds.index(d) for d in dims}
+    regrid_order, _ = zip(*sorted(dmap.items(), key=operator.itemgetter(1)))
+    _, result_order = zip(*sorted(dmap.items(), key=operator.itemgetter(0)))
+    
+    if regrid_order != tuple(dims):
+        data = np.transpose(data, regrid_order)
+
+    regrid_shape = data.shape
+    regrid_shape_3d = (-1,) + regrid_shape[-2:]
+    data = data.reshape(regrid_shape_3d)
+
+    #
+    # XXX: deal with generic grid cube shape ...
+    #
+    gnx, gny = gx.points.size, gy.points.size
+    result = ma.empty((data.shape[0], gny, gnx))
+    result_shape = list(regrid_shape)
+    result_shape[-2:] = gny, gnx
+    result_shape = tuple(result_shape)
+    result.mask = True
+
+    def raster_weights(cell_xi, cell_yi, xi_min, xi_max, yi_min, yi_max):
+        cell_xi -= xi_min
+        cell_yi -= yi_min
+        weights = np.zeros((yi_max - yi_min, xi_max - xi_min), dtype=np.uint8)
+        agg_raster_weights(weights, cell_xi, cell_yi)
+        return weights / 255
+
+    floor = math.floor
+    ceil = math.ceil
+
+    for yi in xrange(gny):
+        for xi in xrange(gnx):
+            yi_stop = yi + 2
+            xi_stop = xi + 2
+            # Get the bounding box of the grid cell
+            # in source coordinates.
+            cell_x = x[yi:yi_stop, xi:xi_stop]
+            cell_y = y[yi:yi_stop, xi:xi_stop]
+            # Convert to fractional source indices.
+            cell_xi = (cell_x - sx0) / sdx
+            cell_yi = (cell_y - sy0) / sdy
+            xi_min, xi_max = min(*cell_xi.flat), max(*cell_xi.flat)
+            yi_min, yi_max = min(*cell_yi.flat), max(*cell_yi.flat)
+            if xi_min < 0 or yi_min < 0 or xi_max > snx or yi_max > sny:
+                # At least one vertex of the grid cell is out of bounds.
+                continue
+            # Snap fractional cell indices outwards to actual source indices.
+            xi_min = int(floor(xi_min))
+            xi_max = int(ceil(xi_max))
+            yi_min = int(floor(yi_min))
+            yi_max = int(ceil(yi_max))
+            # Calculate the weights for the source region overlapped
+            # by this grid cell.
+            weights = raster_weights(cell_xi, cell_yi,
+                                     xi_min, xi_max, yi_min, yi_max)
+            tmp = data[:, yi_min:yi_max, xi_min:xi_max]
+            result[:, yi, xi] = (tmp * weights).sum() / weights.sum()
+
+    if result.shape != result_shape:
+        result = result.reshape(result_shape)
+
+    if result_order != tuple(dims):
+        result = np.transpose(result, result_order)
+
+    #
+    # XXX: construct the result cube ...
+    #
+    result_cube = iris.cube.Cube(result)
+    result_cube.metadata = copy.deepcopy(src_cube.metadata)
+
+    coord_mapping = {}
+
+    def copy_coords(coords, add_coord):
+        for coord in coords:
+            dims = src_cube.coord_dims(coord)
+            if coord is sx:
+                coord = gx
+            elif coord is sy:
+                coord = gy
+            elif sx_dim in dims or sy_dim in dims:
+                continue
+            result_coord = coord.copy()
+            add_coord(result_coord, dims)
+            coord_mapping[id(coord)] = result_coord
+
+    copy_coords(src_cube.dim_coords, result_cube.add_dim_coord)
+    copy_coords(src_cube.aux_coords, result_cube.add_aux_coord)
+
+    return result_cube
