@@ -237,9 +237,7 @@ setup(
                 'lib/iris/experimental/_agg.pyx',
                 'lib/iris/experimental/_agg_raster.cpp',
             ],
-            include_dirs=['./lib/iris/experimental',
-                np.get_include()
-                ],
+            include_dirs=['./lib/iris/experimental', np.get_include()],
             language='c++',
         ),
     ],
