@@ -238,7 +238,6 @@ setup(
                 'lib/iris/experimental/_agg_raster.cpp',
             ],
             include_dirs=['./lib/iris/experimental',
-                '/data/local/itwl/third_party_builds/matplotlib-1.3.1/agg24/include',
                 np.get_include()
                 ],
             language='c++',
