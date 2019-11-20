@@ -13,14 +13,19 @@ env:
     # The decryption key for the encrypted .github/deploy_key.scitools-docs.enc.
     - secure: "N9/qBUT5CqfC7KQBDy5mIWZcGNuUJk3e/qmKJpotWYV+zwOI4GghJsRce6nFnlRiwl65l5oBEcvf3+sBvUfbZqh7U0MdHpw2tHhr2FSCmMB3bkvARZblh9M37f4da9G9VmRkqnyBM5G5TImXtoq4dusvNWKvLW0qETciaipq7ws="
   matrix:
-    - PYTHON_VERSION=3.6 TEST_TARGET=default TEST_MINIMAL=true
-    - PYTHON_VERSION=3.6 TEST_TARGET=default TEST_BLACK=true
-    - PYTHON_VERSION=3.6 TEST_TARGET=example
+#    - PYTHON_VERSION=3.6 TEST_TARGET=default TEST_MINIMAL=true
+#    - PYTHON_VERSION=3.6 TEST_TARGET=default TEST_BLACK=true
+#    - PYTHON_VERSION=3.6 TEST_TARGET=example
+#
+#    - PYTHON_VERSION=3.7 TEST_TARGET=default TEST_MINIMAL=true
+#    - PYTHON_VERSION=3.7 TEST_TARGET=default TEST_BLACK=true
+#    - PYTHON_VERSION=3.7 TEST_TARGET=example
+#    - PYTHON_VERSION=3.7 TEST_TARGET=doctest PUSH_BUILT_DOCS=true
 
-    - PYTHON_VERSION=3.7 TEST_TARGET=default TEST_MINIMAL=true
-    - PYTHON_VERSION=3.7 TEST_TARGET=default TEST_BLACK=true
-    - PYTHON_VERSION=3.7 TEST_TARGET=example
-    - PYTHON_VERSION=3.7 TEST_TARGET=doctest PUSH_BUILT_DOCS=true
+    - PYTHON_VERSION=3.8 TEST_TARGET=default TEST_MINIMAL=true
+#    - PYTHON_VERSION=3.7 TEST_TARGET=default TEST_BLACK=true
+#    - PYTHON_VERSION=3.7 TEST_TARGET=example
+#    - PYTHON_VERSION=3.7 TEST_TARGET=doctest PUSH_BUILT_DOCS=true
 
 git:
   # We need a deep clone so that we can compute the age of the files using their git history.
