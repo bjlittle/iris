@@ -36,6 +36,11 @@ Features
   :class:`~iris.analysis.AreaWeighted` regridding schemes.
   See :pull:`3701`.
 
+* Python `logging`_ is now supported within :mod:`iris.analysis.maths`,
+  :mod:`iris.common.metadata`, and :mod:`iris.common.resolve`. Each module
+  now defines a :class:`logging.Logger` instance called ``logger``.
+  See :pull:`3785`.
+
 
 Dependency Updates
 ==================
@@ -51,6 +56,7 @@ Dependency Updates
 * Configuring Iris and :ref:`installing_from_source` as a developer, with all the
   required package dependencies is now easier with our curated conda environment
   YAML files. See :pull:`3812`.
+
 
 Bugs Fixed
 ==========
@@ -125,6 +131,16 @@ Incompatible Changes
   property, the corresponding Iris object will have ``units='unknown'``.
   Prior to Iris ``3.0.0``, these cases defaulted to ``units='1'``.
   See :pull:`3795`.
+
+* The :func:`iris.analysis.maths.apply_ufunc` keyword argument has changed
+  from ``other_cube`` to ``other``, which aligns it with the rest of the 
+  :mod:`iris.analysis.maths` API. See :pull:`3785`.
+
+* The :meth:`iris.analysis.maths.IFunc.__call__` now ignores any surplus ``other``
+  keyword argument provided for a ``data_func`` that only requires **one** argument.
+  This aligns the behaviour of :meth:`iris.analysis.maths.IFunc.__call__` with
+  :func:`~iris.analysis.maths.apply_ufunc`. Previously a ``ValueError`` exception
+  was raised. See :pull:`3785`.
 
 
 Internal
@@ -203,3 +219,4 @@ Documentation
 .. _Matplotlib: https://matplotlib.org/
 .. _CF Ancillary Data: https://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#ancillary-data
 .. _Quality Flags: https://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#flags
+.. _logging: https://docs.python.org/3/library/logging.html
