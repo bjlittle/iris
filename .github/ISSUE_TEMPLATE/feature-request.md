@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ## ⚙ Feature Request
-<!-- A clear and concise description of the feature proposal -->
+<!-- Provide a clear and concise description of the feature proposal -->
 
 ## Motivation
 <!-- Is your feature request related to an existing issue? -->
