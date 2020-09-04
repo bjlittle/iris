@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ## 🐛 Bug Report
-<!-- a clear description of what the bug is -->
+<!-- Provide a clear description of what the bug is -->
 
 ## How To Reproduce
 Steps to reproduce the behaviour:
@@ -28,4 +28,4 @@ Steps to reproduce the behaviour:
  - Iris Version.  [e.g., From the command line run `python -c "import iris; print(iris.__version__)"`]
 
 ## Additional context
-<!--  Add any other context about the problem here -->
+<!-- Provide any further information to help us understand -->

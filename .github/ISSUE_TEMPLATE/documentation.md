@@ -9,4 +9,4 @@ assignees: ''
 
 ## 📚 Documentation
 <!-- See https://scitools-iris.readthedocs.io/en/latest/ -->
-<!-- Describe the issue or provide a suggestion for improving the documentation -->
+<!-- Describe the issue or provide a suggestion for improving the Iris documentation -->
