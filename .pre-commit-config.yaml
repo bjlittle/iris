@@ -11,7 +11,7 @@ repos:
         # Check for debugger imports and py37+ `breakpoint()` calls in python source.
     -   id: debug-statements
         # Don't commit to master branch.
-    -   id: no-commit-to-branch
+#    -   id: no-commit-to-branch
 -   repo: https://github.com/psf/black
     rev: '19.10b0'
     hooks:
