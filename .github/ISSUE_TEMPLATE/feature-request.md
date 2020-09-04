@@ -15,4 +15,4 @@ assignees: ''
 <!-- I'm always frustrated when ... -->
 
 ## Additional context
-<!-- any other useful information -->
+<!-- Provide any further information to help us understand -->
