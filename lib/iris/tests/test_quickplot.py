@@ -14,6 +14,7 @@ import iris.tests.test_plot as test_plot
 
 import iris
 
+
 # Run tests in no graphics mode if matplotlib is not available.
 if tests.MPL_AVAILABLE:
     import matplotlib.pyplot as plt
