@@ -4,7 +4,7 @@
 "Type: Documentation":
 - docs/**/*
 
-"Type: Infrastructure":
+bug:
 - any: ['*']
 
 "Type: Testing":
