@@ -29,4 +29,3 @@ Iris documentation table of contents
    developers_guide/index.rst
    whitepapers/index.rst
    copyright.rst
-
