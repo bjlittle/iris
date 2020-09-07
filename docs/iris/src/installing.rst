@@ -5,3 +5,4 @@ Installing Iris
 ****************
 
 .. include:: ../../../INSTALL
+

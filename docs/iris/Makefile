@@ -1,5 +1,6 @@
 SUBDIRS = src
 
+
 html:
 	@for i in $(SUBDIRS); do \
         echo "make html in $$i..."; \
