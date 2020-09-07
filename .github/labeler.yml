@@ -1,11 +1,11 @@
 "New: Pull Request":
-  - "**"
+- "**"
 
 "Type: Documentation":
-  - docs/**/*
+- docs/**/*
 
 "Type: Infrastructure":
-  - any: ['./*', '.github/**/*', 'etc/**/*', 'lib/iris/etc/**/*', 'requirements/**/*', 'tools/**/*']
+- './*'
 
 "Type: Testing":
-  - lib/iris/tests/**/*
+- lib/iris/tests/**/*
