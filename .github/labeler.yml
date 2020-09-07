@@ -5,8 +5,7 @@
 - docs/**/*
 
 "Type: Infrastructure":
-- "./*"
-- ".github/**/*"
+- any: ["./*"]
 
 "Type: Testing":
 - lib/iris/tests/**/*
