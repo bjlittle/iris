@@ -4,8 +4,9 @@
 "Type: Documentation":
 - docs/**/*
 
-bug:
+"Type: Infrastructure":
 - "./*"
+- ".github/**/*"
 
 "Type: Testing":
 - lib/iris/tests/**/*
