@@ -5,7 +5,7 @@
   - docs/**/*
 
 "Type: Infrastructure":
-  - any["./*", ".github/**/*", "etc/**/*", "lib/iris/etc/**/*", "requirements/**/*", "tools/**/*"]
+  - any: ["./*", ".github/**/*", "etc/**/*", "lib/iris/etc/**/*", "requirements/**/*", "tools/**/*"]
 
 "Type: Testing":
   - lib/iris/tests/**/*
