@@ -33,7 +33,7 @@ Steps to reproduce the behaviour:
 <summary>Click to expand <b>this section...</b></summary>
 
 ```
-Add additional verbose information in a collapsible section �~_~Q~M
+Add additional verbose information in a collapsible section.
 ```
-See [here](https://gist.github.com/pierrejoubert73/902cc94d79424356a8d20be2b382e1ab) for details.
+See [here](https://gist.github.com/pierrejoubert73/902cc94d79424356a8d20be2b382e1ab) for further details.
 </details>
