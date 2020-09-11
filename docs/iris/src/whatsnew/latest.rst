@@ -36,10 +36,11 @@ Features
   :class:`~iris.analysis.AreaWeighted` regridding schemes.
   See :pull:`3701`.
 
-* Python `logging`_ is now supported within :mod:`iris.analysis.maths`,
+* Bill Little added Python `logging`_ support within :mod:`iris.analysis.maths`,
   :mod:`iris.common.metadata`, and :mod:`iris.common.resolve`. Each module
-  now defines a :class:`logging.Logger` instance called ``logger``.
-  See :pull:`3785`.
+  now defines a :class:`logging.Logger` instance called ``logger`` with a default
+  ``level`` of ``INFO``. To enable ``DEBUG`` level logging use
+  ``logger.setLevel("DEBUG")``. (:pull:`3785`)
 
 
 Dependency Updates
@@ -132,15 +133,15 @@ Incompatible Changes
   Prior to Iris ``3.0.0``, these cases defaulted to ``units='1'``.
   See :pull:`3795`.
 
-* The :func:`iris.analysis.maths.apply_ufunc` keyword argument has changed
-  from ``other_cube`` to ``other``, which aligns it with the rest of the 
-  :mod:`iris.analysis.maths` API. See :pull:`3785`.
+* Bill Little aligned the :func:`iris.analysis.maths.apply_ufunc` with the
+  rest of the :mod:`iris.analysis.maths` API by changing its keyword argument
+  from ``other_cube`` to ``other``. (:pull:`3785`)
 
-* The :meth:`iris.analysis.maths.IFunc.__call__` now ignores any surplus ``other``
-  keyword argument provided for a ``data_func`` that only requires **one** argument.
-  This aligns the behaviour of :meth:`iris.analysis.maths.IFunc.__call__` with
-  :func:`~iris.analysis.maths.apply_ufunc`. Previously a ``ValueError`` exception
-  was raised. See :pull:`3785`.
+* Bill Little changed the :meth:`iris.analysis.maths.IFunc.__call__` to ignore
+  any surplus ``other`` keyword argument for a ``data_func`` that requires **only
+  one** argument. This aligns the behaviour of :meth:`iris.analysis.maths.IFunc.__call__`
+  with :func:`~iris.analysis.maths.apply_ufunc`. Previously a ``ValueError``
+  exception was raised. (:pull:`3785`)
 
 
 Internal
