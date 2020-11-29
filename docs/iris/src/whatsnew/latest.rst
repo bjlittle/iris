@@ -46,10 +46,14 @@ This document explains the changes made to Iris for this release
 📚 Documentation
 ================
 
-* N/A
+* `@rcomer`_ updated the "Seasonal ensemble model plots" Gallery example.
+  (:pull:`3933`)
 
 
 💼 Internal
 ===========
 
 * N/A
+
+
+.. _@rcomer: https://github.com/rcomer
