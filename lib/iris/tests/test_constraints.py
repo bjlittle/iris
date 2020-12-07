@@ -69,11 +69,22 @@ class TestSimple(tests.IrisTest):
         self.assertEqual(len(sub_list), 70 * 6)
 
     def test_coord_availability(self):
+        # "model_level_number" coordinate available
         constraint = iris.Constraint(model_level_number=lambda x: True)
         result = self.slices.extract(constraint)
         self.assertTrue(result)
 
-        constraint = iris.Constraint(latitude=lambda x: False)
+        # "wibble" coordinate is not available
+        constraint = iris.Constraint(wibble=lambda x: False)
+        result = self.slices.extract(constraint)
+        self.assertFalse(result)
+
+        constraint = iris.Constraint(wibble=lambda x: True)
+        result = self.slices.extract(constraint)
+        self.assertFalse(result)
+
+        # "lambda x: False" always (confusingly) throws away the cube
+        constraint = iris.Constraint(model_level_number=lambda x: False)
         result = self.slices.extract(constraint)
         self.assertFalse(result)
 
