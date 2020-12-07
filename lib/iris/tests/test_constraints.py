@@ -79,6 +79,7 @@ class TestSimple(tests.IrisTest):
         result = self.slices.extract(constraint)
         self.assertFalse(result)
 
+        # "wibble" coordinate is not available
         constraint = iris.Constraint(wibble=lambda x: True)
         result = self.slices.extract(constraint)
         self.assertFalse(result)
