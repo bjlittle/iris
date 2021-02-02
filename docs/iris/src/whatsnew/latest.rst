@@ -12,7 +12,6 @@ This document explains the changes made to Iris for this release
    :title: text-primary text-center font-weight-bold
    :body: bg-light
    :animate: fade-in
-   :open:
 
    The highlights for this major/minor release of Iris include:
 
@@ -82,6 +81,8 @@ This document explains the changes made to Iris for this release
 
 #. `@rcomer`_ removed an old unused test file. (:pull:`3913`)
 
+#. `@bjlittle`_ extended the `cirrus-ci`_ testing and `nox`_ testing automation to support `Python 3.8`_. (:pull:`3976`)
+
 
 .. comment
     Whatsnew author names (@github name) in alphabetical order. Note that,
@@ -96,3 +97,4 @@ This document explains the changes made to Iris for this release
 
 .. _abstract base class: https://docs.python.org/3/library/abc.html
 .. _GitHub: https://github.com/SciTools/iris/issues/new/choose
+.. _Python 3.8: https://www.python.org/downloads/release/python-380/
