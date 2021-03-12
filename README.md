@@ -14,6 +14,9 @@
 <a href="https://travis-ci.org/SciTools/iris/branches">
 <img src="https://api.travis-ci.org/repositories/SciTools/iris.svg?branch=master"
      alt="Travis-CI" /></a>
+<a href="https://results.pre-commit.ci/latest/github/bjlittle/iris/master">
+<img src="https://results.pre-commit.ci/badge/github/bjlittle/iris/master.svg"
+     alt="Pre-commit CI" /></a>
 <a href="https://anaconda.org/conda-forge/iris">
 <img src="https://img.shields.io/conda/dn/conda-forge/iris.svg"
      alt="conda-forge downloads" /></a>
