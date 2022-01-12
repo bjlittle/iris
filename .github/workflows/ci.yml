@@ -34,7 +34,6 @@ jobs:
           activate-environment: iris-ci
           environment-file: ${{ matrix.environment-file }}
           mamba-version: "*"
-          use-mamba: true
       - run: |
           conda info
           conda list
