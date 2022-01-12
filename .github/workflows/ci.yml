@@ -33,6 +33,8 @@ jobs:
           auto-update-conda: false 
           activate-environment: iris-ci
           environment-file: ${{ matrix.environment-file }}
+          miniforge-version: latest
+          use-mamba: true
       - run: |
           conda info
           conda list
