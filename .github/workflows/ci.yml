@@ -62,4 +62,4 @@ jobs:
 
       - name: Import Iris
         run: |
-          python -c "import iris"
+          python -c "import iris; print(iris.__version__)"
