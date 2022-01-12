@@ -1,0 +1,39 @@
+# reference: https://github.com/marketplace/actions/setup-miniconda
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    name: ${{ matrix.os }} ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      matrix:
+        fail-fast: false
+        os: ["ubuntu-latest"]
+        python-version: ["3.8"]
+        include:
+          - os: ubuntu-latest
+            environment-file: requirements/ci/nox.lock/py38-linux-64.lock
+
+  steps:
+    - uses: actions/checkout@v2
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: false 
+        activate-environment: iris-ci
+        environment-file: ${{ matrix.environment-file }}
+    - run: |
+        conda info
+        conda list
+
