@@ -36,10 +36,10 @@ jobs:
         uses: actions/cache@v2
         env:
           CACHE_BUILD: 0
-          CACHE_FILE: ${{ matrix.lock-file }}
+          LOCK_FILE: ${{ matrix.lock-file }}
         with:
           path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-py${{ matrix.python-version }}-${{ env.CACHE_BUILD }}-${{ hashFiles(env.CACHE_FILE) }}
+          key: ${{ runner.os }}-conda-py${{ matrix.python-version }}-${{ env.CACHE_BUILD }}-${{ hashFiles(env.LOCK_FILE) }}
 
       - name: Configure Conda Environment
         uses: conda-incubator/setup-miniconda@v2
@@ -52,11 +52,14 @@ jobs:
           mamba-version: "*"
           activate-environment: iris-tests
           auto-update-conda: false 
+          python-version: ${{ matrix.python-version }}
           use-only-tar-bz2: true
 
       - name: Install Iris Dependencies
+        env:
+          LOCK_FILE: ${{ matrix.lock-file }}
         run: |
-          mamba create --file ${CACHE_FILE}
+          mamba create --file ${LOCK_FILE}
 
       - name: Conda Info
         run: |
