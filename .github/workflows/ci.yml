@@ -1,4 +1,7 @@
-# reference: https://github.com/marketplace/actions/setup-miniconda
+# reference:
+#   - https://github.com/actions/cache
+#   - https://github.com/actions/checkout
+#   - https://github.com/marketplace/actions/setup-miniconda
 
 name: CI
 
@@ -24,18 +27,32 @@ jobs:
         python-version: ["3.8"]
         include:
           - os: ubuntu-latest
-            environment-file: requirements/ci/nox.lock/py38-linux-64.lock
+            lock-file: requirements/ci/nox.lock/py38-linux-64.lock
 
     steps:
       - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
+
+      - name: Cache Conda Packages
+        uses: actions/cache@v2
+        env:
+          CACHE_BUILD: 0
+          CACHE_FILE: ${{ matrix.lock-file }}
+        with:
+          path: ~/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-py${{ matrix.python-version }}-${{ env.CACHE_BUILD }}-${{ hashFiles(env.CACHE_FILE) }}
+
+      - name: Configure Conda Environment
+        uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: false 
-          activate-environment: iris-ci
-          environment-file: ${{ matrix.environment-file }}
+          activate-environment: iris-tests
+          environment-file: ${{ matrix.lock-file }}
           miniforge-version: latest
           use-mamba: true
-      - run: |
+          use-only-tar-bz2: true
+
+      - name: Conda Environment
+        run: |
           conda info
           conda list
 
