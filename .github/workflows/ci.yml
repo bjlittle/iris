@@ -46,10 +46,15 @@ jobs:
         with:
           auto-update-conda: false 
           activate-environment: iris-tests
-          environment-file: ${{ matrix.lock-file }}
-          miniforge-version: latest
-          use-mamba: true
+#          environment-file: ${{ matrix.lock-file }}
+#          miniforge-version: latest
+#          use-mamba: true
+          mamba-version: "*"
           use-only-tar-bz2: true
+
+      - name: Install Iris Dependencies
+        run: |
+          mamba create --file ${CACHE_FILE}
 
       - name: Conda Info
         run: |
