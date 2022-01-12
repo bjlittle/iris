@@ -51,8 +51,15 @@ jobs:
           use-mamba: true
           use-only-tar-bz2: true
 
-      - name: Conda Environment
+      - name: Conda Info
         run: |
           conda info
           conda list
 
+      - name: Install Iris
+        run: |
+          python -m pip install --no-deps -e .
+
+      - name: Import Iris
+        run: |
+          python -c "import iris"
