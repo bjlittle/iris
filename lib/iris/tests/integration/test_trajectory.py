@@ -217,8 +217,9 @@ class TestTriPolar(tests.IrisTest):
         self.cube = cube
         # define a latitude trajectory (put coords in a different order
         # to the cube, just to be awkward)
-        latitudes = list(range(-90, 90, 2))
-        longitudes = [-90] * len(latitudes)
+        dtype = np.float32
+        latitudes = np.array(list(range(-90, 90, 2)), dtype=dtype)
+        longitudes = np.array([-90] * len(latitudes), dtype=dtype)
         self.sample_points = [
             ("longitude", longitudes),
             ("latitude", latitudes),
