@@ -48,11 +48,8 @@ jobs:
         run: |
           wget --quiet https://github.com/SciTools/iris-test-data/archive/v${{ env.IRIS_TEST_DATA_VERSION }}.zip -O iris-test-data.zip
           unzip -q iris-test-data.zip
-          mv iris-test-data-${{ env.IRIS_TEST_DATA_VERSION }} ~/iris-test-data
-          echo ~
-          pwd 
-          ls -l
-          env | sort
+          mv iris-test-data-${{ env.IRIS_TEST_DATA_VERSION }} ${HOME}/iris-test-data
+          ls -l ${HOME}
 
       - name: Cache Conda Packages
         uses: actions/cache@v2
