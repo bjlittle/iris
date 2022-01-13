@@ -25,7 +25,6 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         python-version: ["3.8"]
-        iris-test-data: ["2.5"]
         include:
           - os: ubuntu-latest
             lock-file: requirements/ci/nox.lock/py38-linux-64.lock
@@ -33,20 +32,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Environment Variables
+        run: |
+          echo "IRIS_TEST_DATA_VERSION=2.5" >> $GITHUB_ENV
+
       - name: Cache Iris Test Data
         uses: actions/cache@v2
         env:
           CACHE_BUILD: 0
         with:
           path: ~/iris-test-data
-          key: ${{ runner.os }}-iris-test-data-v${{ matrix.iris-test-data }}-${{ env.CACHE_BUILD }}
+          key: ${{ runner.os }}-iris-test-data-v${{ env.IRIS_TEST_DATA_VERSION }}-${{ env.CACHE_BUILD }}
 
       - name: Download Iris Test Data
+        env:
+          IRIS_TEST_DATA_VERSION: ${{ matrix.iris-test-data }}
         run: |
           wget --quiet https://github.com/SciTools/iris-test-data/archive/v${IRIS_TEST_DATA_VERSION}.zip -O iris-test-data.zip
           unzip -q iris-test-data.zip
-          mv iris-test-data-${IRIS_TEST_DATA_VERSION} ${IRIS_TEST_DATA_DIR}
+          mv iris-test-data-${IRIS_TEST_DATA_VERSION} ~/iris-test-data 
           ls -l
+          env | sort
 
       - name: Cache Conda Packages
         uses: actions/cache@v2
