@@ -42,7 +42,7 @@ jobs:
           CACHE_BUILD: 0
         with:
           path: ~/iris-test-data
-          key: ${{ runner.os }}-iris-test-data-v${{ env.IRIS_TEST_DATA_VERSION }}-${{ env.CACHE_BUILD }}
+          key: ${{ runner.os }}-iris-test-data-v${{ env.IRIS_TEST_DATA_VERSION }}-build${{ env.CACHE_BUILD }}
 
       - name: Download Iris Test Data
         run: |
@@ -62,7 +62,7 @@ jobs:
           LOCK_FILE: ${{ matrix.lock-file }}
         with:
           path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-py${{ matrix.python-version }}-${{ env.CACHE_BUILD }}-${{ hashFiles(env.LOCK_FILE) }}
+          key: ${{ runner.os }}-conda-py${{ matrix.python-version }}-build${{ env.CACHE_BUILD }}-${{ hashFiles(env.LOCK_FILE) }}
 
       - name: Configure Conda Environment
         uses: conda-incubator/setup-miniconda@v2
