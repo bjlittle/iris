@@ -48,7 +48,9 @@ jobs:
         run: |
           wget --quiet https://github.com/SciTools/iris-test-data/archive/v${{ env.IRIS_TEST_DATA_VERSION }}.zip -O iris-test-data.zip
           unzip -q iris-test-data.zip
-          mv iris-test-data-${{ env.IRIS_TEST_DATA_VERSION }} ~/iris-test-data 
+          mv iris-test-data-${{ env.IRIS_TEST_DATA_VERSION }} ~/iris-test-data
+          echo ~
+          pwd 
           ls -l
           env | sort
 
@@ -83,3 +85,8 @@ jobs:
       - name: Import Iris
         run: |
           python -c "import iris; print(f'Installed Iris v{iris.__version__}')"
+
+      - name: What
+        run: |
+          echo ~
+          ls -l
