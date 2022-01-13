@@ -48,9 +48,9 @@ jobs:
         env:
           IRIS_TEST_DATA_VERSION: ${{ matrix.iris-test-data }}
         run: |
-          wget --quiet https://github.com/SciTools/iris-test-data/archive/v${IRIS_TEST_DATA_VERSION}.zip -O iris-test-data.zip
+          wget --quiet https://github.com/SciTools/iris-test-data/archive/v${{ env.IRIS_TEST_DATA_VERSION }}.zip -O iris-test-data.zip
           unzip -q iris-test-data.zip
-          mv iris-test-data-${IRIS_TEST_DATA_VERSION} ~/iris-test-data 
+          mv iris-test-data-${{ env.IRIS_TEST_DATA_VERSION }} ~/iris-test-data 
           ls -l
           env | sort
 
