@@ -32,9 +32,65 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Environment Variables
+        run: |
+          echo "IRIS_TEST_DATA_VERSION=2.5" >> $GITHUB_ENV
+
+      - name: Cache Iris Test Data
+        uses: actions/cache@v2
+        env:
+          CACHE_BUILD: 0
+        with:
+          path: ~/iris-test-data
+          key: ${{ runner.os }}-iris-test-data-v${{ env.IRIS_TEST_DATA_VERSION }}-build${{ env.CACHE_BUILD }}
+
+      - name: Download Iris Test Data
+        run: |
+          if [[ "$(cat ${HOME}/iris-test-data/version.txt)" != ${{ env.IRIS_TEST_DATA_VERSION }} ]]
+          then
+            wget --quiet https://github.com/SciTools/iris-test-data/archive/v${{ env.IRIS_TEST_DATA_VERSION }}.zip -O iris-test-data.zip
+            unzip -q iris-test-data.zip
+            mv iris-test-data-${{ env.IRIS_TEST_DATA_VERSION }} ${HOME}/iris-test-data
+          fi
+
+      - name: Cache Conda Packages
+        uses: actions/cache@v2
+        env:
+          CACHE_BUILD: 0
+          LOCK_FILE: ${{ matrix.lock-file }}
+        with:
+          path: ~/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-py${{ matrix.python-version }}-build${{ env.CACHE_BUILD }}-${{ hashFiles(env.LOCK_FILE) }}
+
+      - name: Configure Conda Environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          environment-file: ${{ matrix.lock-file }}
+          miniforge-version: latest
+          use-mamba: true
+          activate-environment: iris-tests
+          auto-update-conda: false 
+          use-only-tar-bz2: true
+
+      - name: Conda Details
+        run: |
+          conda info
+          conda list
+
+      - name: Install Iris
+        run: |
+          python -m pip install --no-deps -e .
+
+      - name: Configure Iris
+        env:
+          SITE_CFG: lib/iris/etc/site.cfg
+        run: |
+          echo "[Resources]" >> ${SITE_CFG}
+          echo "test_data_dir = ${HOME}/iris-test-data/test_data" >> ${SITE_CFG}
+          echo "doc_dir = ${GITHUB_WORKSPACE}/docs" >> ${SITE_CFG}
+          cat ${SITE_CFG}
+
       - name: Import Iris
         run: |
-          pwd
-          ls -l
-          env | sort
+          python -c "import iris; print(f'Installed Iris v{iris.__version__}')"
 
