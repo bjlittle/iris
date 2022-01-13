@@ -94,3 +94,6 @@ jobs:
         run: |
           python -c "import iris; print(f'Installed Iris v{iris.__version__}')"
 
+      - name: Test Iris
+        run: |
+          python -m iris.tests.runner --system-tests
