@@ -26,7 +26,7 @@ jobs:
         os: ["ubuntu-18.04"]
         python-version: ["3.8"]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-18.04
             lock-file: requirements/ci/nox.lock/py38-linux-64.lock
 
     steps:
