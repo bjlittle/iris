@@ -97,4 +97,5 @@ jobs:
 
       - name: Test Iris
         run: |
-          python -m iris.tests.runner --default-tests --system-tests
+          #python -m iris.tests.runner --default-tests --system-tests
+          python lib/iris/tests/integration/test_trajectory.py
