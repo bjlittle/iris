@@ -226,7 +226,7 @@ class TestTriPolar(tests.IrisTest):
 
     def test_tri_polar(self):
         # extract
-        sampled_cube = traj_interpolate(self.cube, self.sample_points)
+        sampled_cube = traj_interpolate(self.cube, self.sample_points, method="nearest")
         self.assertCML(
             sampled_cube, ("trajectory", "tri_polar_latitude_slice.cml")
         )

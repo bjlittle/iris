@@ -24,11 +24,10 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.9"]
+        python-version: ["3.8"]
         include:
           - os: ubuntu-latest
-            lock-file: requirements/ci/py39.yml
-#            lock-file: requirements/ci/nox.lock/py38-linux-64.lock
+            lock-file: requirements/ci/nox.lock/py38-linux-64.lock
 
     steps:
       - uses: actions/checkout@v2
@@ -98,4 +97,4 @@ jobs:
       - name: Test Iris
         run: |
           #python -m iris.tests.runner --default-tests --system-tests
-          python lib/iris/tests/integration/test_trajectory.py
+          python lib/iris/tests/integration/test_trajectory.py TestTriPolar.test_tri_polar
