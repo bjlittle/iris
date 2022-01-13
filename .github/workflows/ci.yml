@@ -24,10 +24,10 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.8"]
+        python-version: ["3.9"]
         include:
           - os: ubuntu-latest
-            lock-file: requirements/ci/py38.yml
+            lock-file: requirements/ci/py39.yml
 #            lock-file: requirements/ci/nox.lock/py38-linux-64.lock
 
     steps:
