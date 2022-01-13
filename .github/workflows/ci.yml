@@ -27,7 +27,8 @@ jobs:
         python-version: ["3.8"]
         include:
           - os: ubuntu-latest
-            lock-file: requirements/ci/nox.lock/py38-linux-64.lock
+            lock-file: requirements/ci/py38.yml
+#            lock-file: requirements/ci/nox.lock/py38-linux-64.lock
 
     steps:
       - uses: actions/checkout@v2
