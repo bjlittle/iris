@@ -514,7 +514,7 @@ def exponentiate(cube, exponent, in_place=False):
     return _math_op_common(
         cube,
         power,
-        cube.units ** exponent,
+        cube.units**exponent,
         new_dtype=new_dtype,
         in_place=in_place,
     )
