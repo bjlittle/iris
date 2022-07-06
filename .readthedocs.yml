@@ -6,7 +6,6 @@ build:
     python: mambaforge-4.10
   jobs:
     post_checkout:
-      - git status
       - git fetch --unshallow
       - git fetch --all
       - git tag --list
