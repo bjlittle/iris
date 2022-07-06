@@ -8,6 +8,7 @@ build:
     post_checkout:
       - git fetch --unshallow
       - git fetch --all
+      - git tag -d v3.1a0
 
 conda:
   environment: requirements/ci/readthedocs.yml
