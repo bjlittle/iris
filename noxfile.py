@@ -26,7 +26,7 @@ _PY_VERSION_LATEST = _PY_VERSIONS_ALL[-1]
 #: One specific python version for docs builds
 _PY_VERSION_DOCSBUILD = _PY_VERSION_LATEST
 
-#: Cirrus-CI environment variable hook.
+#: Python environment variable hook.
 PY_VER = os.environ.get("PY_VER", _PY_VERSIONS_ALL)
 
 #: Default cartopy cache directory.
@@ -169,6 +169,12 @@ def prepare_venv(session: nox.sessions.Session) -> None:
             f"--prefix={venv_dir}",
             "--explicit",
         )
+
+    # Determine whether to annotate failed tests within CI with a GHA.
+    annotate = "-a" in session.posargs or "--annotate" in session.posargs
+
+    if annotate:
+        session.install("pytest-github-actions-annotate-failures")
 
 
 @nox.session(python=PY_VER, venv_backend="conda")
