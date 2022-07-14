@@ -152,7 +152,7 @@ class Test___eq__(tests.IrisTest):
         cell2 = Cell(np.nan)
         self.assertEqual(cell1, np.nan)
         self.assertEqual(np.nan, cell1)
-        self.assertEqual(cell1, cell2)
+        self.assertNotEqual(cell1, cell2)
 
 
 class Test___hash__(tests.IrisTest):
