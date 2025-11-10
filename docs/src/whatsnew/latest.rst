@@ -30,33 +30,13 @@ This document explains the changes made to Iris for this release
 ✨ Features
 ===========
 
-#. `@pp-mo`_ added a new utility function for making a test cube with a specified 2D
-   horizontal grid.
-   (:issue:`5770`, :pull:`6581`)
-
-#. `@bjlittle`_ extended ``zlib`` compression of :class:`~iris.cube.Cube` data
-   payload when saving to NetCDF to also include any attached `CF-UGRID`_
-   :class:`~iris.mesh.components.MeshXY`. Additionally,
-   :func:`~iris.fileformats.netcdf.saver.save_mesh` also supports ``zlib``
-   compression. (:issue:`6565`, :pull:`6728`)
+#. N/A
 
 
 🐛 Bugs Fixed
 =============
 
-#. `@trexfeathers`_ corrected the ESMF/ESMPy import in
-   :mod:`iris.experimental.regrid_conservative` (the module was renamed to ESMPy
-   in v8.4). Note that :mod:`~iris.experimental.regrid_conservative`
-   is already deprecated and will be removed in a future release. (:pull:`6643`)
-
-#. `@rcomer`_ fixed a bug in merging cubes with cell measures or ancillary
-   variables. The merged cube now has the cell measures and ancillary variables
-   on the correct dimensions, and merge no longer fails when trying to add
-   them to a dimension of the wrong length. (:issue:`2076`, :pull:`6688`)
-
-#. `@bjlittle`_ added support for preserving masked auxiliary coordinates when
-   using :meth:`~iris.cube.Cube.aggregated_by` or :meth:`~iris.cube.Cube.collapsed`.
-   (:issue:`6473`, :pull:`6706`, :pull:`6719`)
+#. N/A
 
 
 💣 Incompatible Changes
@@ -65,18 +45,10 @@ This document explains the changes made to Iris for this release
 #. N/A
 
 
-🚀 Performance
-==============
+🚀 Performance Enhancements
+===========================
 
-#. `@trexfeathers`_ investigated a significant performance regression in NetCDF
-   loading and saving, caused by ``libnetcdf`` version ``4.9.3``.
-   The regression is equal to several milliseconds per chunk
-   of parallel operation; so a dataset containing ~100 chunks could be around
-   0.5 seconds slower to load or save. This regression will NOT be fixed within
-   Iris - doing so would introduce unacceptable complexity and potential
-   concurrency problems. The regession has been reported to the NetCDF team; it
-   is hoped that a future ``libnetcdf`` release will recover the original
-   performance. See `netcdf-c#3183`_ for more details. (:pull:`6747`)
+#. N/A
 
 
 🔥 Deprecations
@@ -94,34 +66,21 @@ This document explains the changes made to Iris for this release
 📚 Documentation
 ================
 
-#. `@rcomer`_ updated all Cartopy references to point to the new location at
-   https://cartopy.readthedocs.io (:pull:`6636`)
+#. N/A
 
 
 💼 Internal
 ===========
 
-#. `@trexfeathers`_ fixed benchmark result comparison to inspect the results
-   for the current machine only. This is useful for setups where a single
-   home-space is shared between multiple machines, as with some virtual desktop
-   arrangements. (:pull:`6550`)
-
-#. `@melissaKG`_ upgraded Iris' tests to no longer use the deprecated
-   ``git whatchanged`` command. (:pull:`6672`)
-
-#. `@ukmo-ccbunney` merged functionality of ``assert_CML_approx_data`` into
-   ``assert_CML`` via the use of a new ``approx_data`` keyword. (:pull:`6713`)
+#. N/A
 
 
 .. comment
     Whatsnew author names (@github name) in alphabetical order. Note that,
     core dev names are automatically included by the common_links.inc:
 
-.. _@melissaKG: https://github.com/melissaKG
 
 
 
 .. comment
     Whatsnew resources in alphabetical order:
-
-.. _netcdf-c#3183: https://github.com/Unidata/netcdf-c/issues/3183
